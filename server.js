@@ -4,7 +4,7 @@ const path = require('path');
 const port = 3000
 
 app.get('/', (req, res) => {
-  res.redirect("../tyler");
+  res.sendFile(path.join(__dirname + '/index.html'));
 })
 
 app.get('/tyler', function(req, res) {
