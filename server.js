@@ -23,5 +23,5 @@ app.use(function(req, res, next) {
 app.use(express.static('frontend'));
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+  console.log(`listening at ${port}`)
 })
