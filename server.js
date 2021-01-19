@@ -1,15 +1,26 @@
 const express = require('express')
 const app = express()
 const path = require('path');
+const { nextTick } = require('process');
 const port = 3000
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname + '/index.html'));
-})
+var url = require('url');
 
-app.get('/tyler', function(req, res) {
-  res.sendFile(path.join(__dirname + '/tyler.html'));
+function fullUrl(req) {
+  return url.format({
+    protocol: req.protocol,
+    host: req.get('host'),
+    pathname: req.originalUrl
+  });
+}
+
+app.use(function(req, res, next) {
+  console.log(fullUrl(req));
+  console.log(req.ip);
+  next();
 });
+
+app.use(express.static('frontend'));
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
