@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const path = require('path');
 const { nextTick } = require('process');
-const port = 3000
+const port = 80
 
 var url = require('url');
 
