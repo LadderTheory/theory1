@@ -41,9 +41,9 @@ class Sudoku {
         //square
         pos = arg;
         pos -= pos % 3;
-        pos -= ((pos / 9) - (pos % 3)) * 9;
+        pos -= (Math.floor(pos / 9) % 3) * 9;
         for (let y = pos; y < arg; y += 9) {
-            for (let x = y; x < arg || x < y + 3; x += 1) {
+            for (let x = y; x < arg && x < y + 3; x += 1) {
                 bad.push(this.puzzle[x]);
             }
         }
