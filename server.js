@@ -1,10 +1,12 @@
 const express = require('express')
-const app = express()
 const path = require('path');
-const { nextTick } = require('process');
-const port = 80
-
+const { nextTick, send } = require('process');
 var url = require('url');
+
+const sudoku = require('./sudoku')
+
+const app = express()
+const port = 80
 
 function fullUrl(req) {
   return url.format({
@@ -15,10 +17,30 @@ function fullUrl(req) {
 }
 
 app.use(function(req, res, next) {
-  console.log(fullUrl(req));
-  console.log(req.ip);
+  let data = {
+    "Full Url": fullUrl(req),
+    "Hostname": req.hostname,
+    "Params": req.params,
+    "Queries": req.query,
+    "Ip Address": req.ip,
+  };
+
+  console.log(data)
   next();
 });
+
+app.get("/sudoku", function(req, res) {
+  let s = new sudoku.Sudoku()
+  s.gen();
+  let sendme = {};
+  sendme.puzzle = s.raw_puzzle;
+
+  if (req.query.possibilities == "1") {
+    sendme.debug = {};
+    sendme.debug.possibilities = s.possibilities;
+  }
+  res.json(sendme);
+})
 
 app.use(express.static('frontend'));
 
