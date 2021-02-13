@@ -98,7 +98,6 @@ class Sudoku {
 
         //flip
         let good = [];
-
         for (let i = 1; i <= 9; i += 1) {
             if (!bad.includes(i)){
                 good.push(i);
