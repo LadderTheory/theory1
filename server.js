@@ -3,6 +3,7 @@ const express = require('express')
 const path = require('path');
 const { nextTick, send } = require('process');
 var url = require('url');
+const cors = require('cors');
 
 const sudoku = require('./sudoku')
 
@@ -82,7 +83,11 @@ app.get("/sudoku/api", function(req, res) {
   res.json(sendme);
 })
 
-app.use(express.static('frontend'));
+app.use(express.static('frontend/build'));
+
+app.get("/", function(req, res) {
+  return res.sendFile(path.join(__dirname, "frontend", "build", "index.html"));
+})
 
 app.listen(port, () => {
   console.log(`listening at ${port}`)
