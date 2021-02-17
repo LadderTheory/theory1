@@ -80,6 +80,9 @@ app.get("/sudoku/api", function(req, res) {
     sendme = sendme.builds[0];
   }
   
+  
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
   res.json(sendme);
 })
 
