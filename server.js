@@ -3,6 +3,7 @@ const express = require('express')
 const path = require('path');
 const { nextTick, send } = require('process');
 var url = require('url');
+const cors = require('cors');
 
 const sudoku = require('./sudoku')
 
@@ -19,12 +20,18 @@ function fullUrl(req) {
 }
 
 app.use(function(req, res, next) {
+  let date_ob = new Date();
+
+  let hours = date_ob.getHours();
+  let minutes = date_ob.getMinutes();
+
   let data = {
     "Full Url": fullUrl(req),
     "Hostname": req.hostname,
     "Params": req.params,
     "Queries": req.query,
     "Ip Address": req.ip,
+    "Time": hours + ":" + minutes,
   };
 
   console.log(data)
@@ -79,10 +86,17 @@ app.get("/sudoku/api", function(req, res) {
     sendme = sendme.builds[0];
   }
   
+  
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
   res.json(sendme);
 })
 
-app.use(express.static('frontend'));
+app.use(express.static('frontend/build'));
+
+app.get("/", function(req, res) {
+  return res.sendFile(path.join(__dirname, "frontend", "build", "index.html"));
+})
 
 app.listen(port, () => {
   console.log(`listening at ${port}`)
