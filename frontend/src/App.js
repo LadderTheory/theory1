@@ -55,10 +55,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <p>Puzzle</p>
-        {sudoku.Board()}
-        {sudoku.FillButton()}
-        <p>MyComponent</p>
-        {MyComponent()}
+        <sudoku.Board />
       </header>
     </div>
   );

@@ -20,12 +20,18 @@ function fullUrl(req) {
 }
 
 app.use(function(req, res, next) {
+  let date_ob = new Date();
+
+  let hours = date_ob.getHours();
+  let minutes = date_ob.getMinutes();
+
   let data = {
     "Full Url": fullUrl(req),
     "Hostname": req.hostname,
     "Params": req.params,
     "Queries": req.query,
     "Ip Address": req.ip,
+    "Time": hours + ":" + minutes,
   };
 
   console.log(data)
