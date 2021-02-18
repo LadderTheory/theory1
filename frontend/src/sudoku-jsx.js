@@ -31,11 +31,13 @@ export class Square extends React.Component {
             margin: '1px',
             width: '2em',
             height: '2em',
-            display: 'inline-block',
+            display: 'flex',
             float: 'left',
             'background-color': this.props.color,
             color: '#282c34',
-            'text-align': 'center',
+            'align-content': 'center',
+            'justify-content': 'center',
+            'flex-direction': 'column',
             //'vertical-align': 'middle',
             padding: '0px'
         }
@@ -84,10 +86,10 @@ export class Board extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            puzzle: Array(81).fill(0),
+            empty: Array(81).fill(0),
             hovered: 81,
             focused: 81,
-            raw: Array(81).fill(0),
+            api: {},
         };
 
         this.handleClick = this.handleClick.bind(this);
@@ -99,7 +101,7 @@ export class Board extends React.Component{
     }
 
     handleClick(event) {
-        let newp = this.state.puzzle.slice();
+        //let newp = this.state.puzzle.slice();
         let id = this.getId(event);
         this.setState({focused: id})
     }
@@ -120,7 +122,7 @@ export class Board extends React.Component{
           .then(
             (result) => {
               this.setState({
-                raw: result.puzzle
+                api: result,
               });
             },
             // Note: it's important to handle errors here
@@ -135,7 +137,11 @@ export class Board extends React.Component{
     render() {
         console.log('STATE', this.state)
 
-        let puzzle = this.state.raw.slice();
+        let puzzle = this.state.empty.slice();
+
+        if (this.state.api.puzzle) {
+            puzzle = this.state.api.puzzle.slice();
+        }
 
         let board = [];
 
@@ -166,6 +172,7 @@ export class Board extends React.Component{
                     click={this.handleClick}
                     hover={this.handleHover}
                     color={color}
+                    key={i}
                 />);
             }
             board.push(<br />)

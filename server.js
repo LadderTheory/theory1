@@ -28,6 +28,7 @@ app.use(function(req, res, next) {
   let data = {
     "Full Url": fullUrl(req),
     "Hostname": req.hostname,
+    "Path": req.path,
     "Params": req.params,
     "Queries": req.query,
     "Ip Address": req.ip,
@@ -38,9 +39,7 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get("/sudoku", function(req, res) {
-  res.send(construction)
-});
+
 
 app.get("/sudoku/api", function(req, res) {
   let condition = "t";  
@@ -94,8 +93,12 @@ app.get("/sudoku/api", function(req, res) {
 
 app.use(express.static('frontend/build'));
 
-app.get("/", function(req, res) {
+app.get("/sudoku", function(req, res) {
   return res.sendFile(path.join(__dirname, "frontend", "build", "index.html"));
+});
+
+app.get("/", function(req, res) {
+  return res.send('Site Under Construction');
 })
 
 app.listen(port, () => {
