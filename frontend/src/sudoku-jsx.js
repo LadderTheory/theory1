@@ -130,6 +130,7 @@ export class Board extends React.Component{
             // exceptions from actual bugs in components.
             (error) => {
               this.setState({});
+              console.log("Failed to contact sudoku api");
             }
           )
       }
