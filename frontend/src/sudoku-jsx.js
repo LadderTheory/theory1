@@ -117,7 +117,7 @@ export class Board extends React.Component{
     }
 
     componentDidMount() {
-        fetch("http://localhost/sudoku/api?steps=t")
+        fetch("http://127.0.0.1/sudoku/api?steps=t")
           .then(res => res.json())
           .then(
             (result) => {
