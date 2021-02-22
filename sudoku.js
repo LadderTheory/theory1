@@ -141,7 +141,7 @@ class Sudoku {
     }
 
     //track template
-    static trackalate(arr, pos) {
+    static track(arr, pos) {
         return {
             arr: arr,
             pos: pos,
@@ -238,6 +238,29 @@ class Sudoku {
         
 
         return solutions
+    }
+
+    static solvable(arg) {
+        let empty = [];
+
+        for (let i = 0; i < 81; i += 1) {
+            if (arg[i] == 0) {
+                empty.push(i);
+            }
+        }
+
+        let p_slice = arg.slice();
+        let is_exhausted = false;
+        let all_possibilities = Array(empty.length).fill(this.track([], 0));
+
+        for (let i = 0; i < empty.length && !is_exhausted; i += 1) {
+            all_possibilities[i] = this.track(
+                Sudoku.getPossibilities(empty[i], p_slice),
+                0
+            );
+
+            
+        }
     }
 
     pray() {
