@@ -35,7 +35,11 @@ app.use(function(req, res, next) {
     "Time": hours + ":" + minutes,
   };
 
-  console.log(data)
+  console.log(data);
+
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+
   next();
 });
 
@@ -45,8 +49,9 @@ app.get("/sudoku/api", function(req, res) {
   let condition = "t";  
 
   let full = req.query.full == condition;
-  let possibilities = req.query.possibilities == condition;
+  //let possibilities = req.query.possibilities == condition;
   let steps = req.query.steps == condition;
+  let reduce = req.query.reduce == condition;
 
   let runs = 1;
 
@@ -61,17 +66,24 @@ app.get("/sudoku/api", function(req, res) {
   for (let i = 0; i < runs; i += 1){
     let s = new sudoku.Sudoku()
     s.gen();
+    s.pray();
     let data = {};
-    data.puzzle = s.raw_puzzle;
+    data.raw_puzzle = s.raw_puzzle;
 
     data.debug = {};
 
+    /*
     if (possibilities || full) {
       data.debug.possibilities = s.possibilities;
     }
+    */
     if (steps || full) {
       data.debug.steps = s.steps;
       data.debug.backsteps = s.backsteps;
+    }
+    if (reduce || full) {
+      data.reduced = s.holy;
+      data.difficulty = s.difficulty;
     }
 
     if (Object.keys(data.debug).length == 0) {
@@ -86,8 +98,7 @@ app.get("/sudoku/api", function(req, res) {
   }
   
   
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+
   res.json(sendme);
 })
 

@@ -4,12 +4,14 @@ class Sudoku {
     possibilities;
     steps;
     backsteps;
+    difficulty;
     constructor() {
         this.raw_puzzle = Array(81).fill(0);
         this.holy = Array(81).fill(0);
         this.possibilities = this.newPossibility();
         this.steps = 0;
         this.backsteps = 0;
+        this.difficulty = 81;
     }
 
     api() {
@@ -146,6 +148,45 @@ class Sudoku {
         }
     }
 
+    singleSolution() {
+        let p = this.holy.slice();
+
+        let is_good = true;
+
+        let is_exausted = false;
+        while (!is_exausted && is_good) {
+            let empty = [];
+
+            for (let i = 0; i < 81; i += 1) {
+                if (p[i] == 0) {
+                    empty.push(i);
+                }
+            }
+
+            if (empty.length == 0) {
+                is_exausted = true;
+            } else {
+                let is_good_cycle = false;
+                for (let i = 0; i < empty.length; i += 1)  {
+                    let possibilities = Sudoku.getPossibilities(empty[i], p);
+                    //console.log(i, possibilities[2]);
+
+                    if (possibilities[2].length == 1) {
+                        p[empty[i]] = possibilities[2][0];
+                        is_good_cycle = true;
+                    }
+                }
+
+                if (!is_good_cycle) {
+                    is_good = false;
+                }
+            }
+        }
+
+        return is_good;
+    }
+
+    //I hate this
     static solve(arg, max) {
         let empty = [];//indexes of empty cells
 
@@ -199,25 +240,30 @@ class Sudoku {
         return solutions
     }
 
-    pray(arg) {
-        let kills = arg;
+    pray() {
         let used = [];
         
         this.holy = this.raw_puzzle.slice();
 
-        for (let i = 0; i < kills; i += 1) {
+        let is_solvable = true;
+        while (is_solvable) {
             let pos = Math.floor(Math.random() * 81);
+
             while (used.includes(pos)) {
                 pos += 1;
+
                 if (pos >= 81) {
                     pos = 0;
                 }
             }
-            used.push(pos);
 
             this.holy[pos] = 0;
+            used.push(pos);
 
+            is_solvable =  this.singleSolution();
         }
+
+        this.difficulty = 81 - used.length;
     }
 
     static print(puzzle) {
@@ -234,7 +280,7 @@ class Sudoku {
             printme += ' '
         }
 
-        console.log(printme);
+        return printme;
     }
 }
 

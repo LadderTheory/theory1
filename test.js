@@ -1,12 +1,9 @@
-const sudoku =  require('./sudoku');
+const sudoku = require('./sudoku');
 
 s = new sudoku.Sudoku();
 s.gen();
-s.pray(70)
-solution = sudoku.Sudoku.solve(s.holy.slice(), 5);
+s.pray()
 
-console.log(solution)
-console.log(solution.length, "solution");
-sudoku.Sudoku.print(s.raw_puzzle);
-sudoku.Sudoku.print(s.holy);
-sudoku.Sudoku.print(solution[0])
+console.log(sudoku.Sudoku.print(s.raw_puzzle));
+console.log(sudoku.Sudoku.print(s.holy));
+console.log("Difficulty", s.difficulty);
