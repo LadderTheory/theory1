@@ -117,31 +117,34 @@ export class Board extends React.Component{
     }
 
     componentDidMount() {
-        fetch("http://127.0.0.1/sudoku/api?steps=t")
-          .then(res => res.json())
-          .then(
+        fetch("http://127.0.0.1/sudoku/api?full=t")
+            .then(res => res.json())
+            .then(
             (result) => {
-              this.setState({
+                this.setState({
                 api: result,
-              });
+                });
+                console.log(result);
             },
             // Note: it's important to handle errors here
             // instead of a catch() block so that we don't swallow
             // exceptions from actual bugs in components.
             (error) => {
-              this.setState({});
-              console.log("Failed to contact sudoku api", error);
+                this.setState({});
+                console.log("Failed to contact sudoku api", error);
             }
-          )
-      }
+        )
+    }
+
+
 
     render() {
-        console.log('STATE', this.state)
+        //console.log('STATE', this.state)
 
         let puzzle = this.state.empty.slice();
 
-        if (this.state.api.puzzle) {
-            puzzle = this.state.api.puzzle.slice();
+        if (this.state.api.reduced) {
+            puzzle = this.state.api.reduced.slice();
         }
 
         let board = [];
@@ -179,10 +182,24 @@ export class Board extends React.Component{
             board.push(<br />)
         }
         
+        let difficulty = "";
+
+        if (this.state.api.difficulty) {
+            let dif_style = {
+                margin: '0px',
+                textAlign: 'right',
+                fontSize: ".5em"
+            }
+
+            difficulty = (
+                <p style={dif_style}>Difficulty: {this.state.api.difficulty}</p>
+            )
+        }
 
         return (
             <div style={style} className="sudoku-board">
                 {board}
+                {difficulty}
             </div>
         )
     }

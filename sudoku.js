@@ -186,7 +186,6 @@ class Sudoku {
         return is_good;
     }
 
-    //I hate this
     static solve(arg, max) {
         let empty = [];//indexes of empty cells
 
@@ -196,57 +195,23 @@ class Sudoku {
                 empty.push(i);
             }
         }
-        let psbls = [];
 
-        empty.forEach((x) => {
-            psbls.push(Sudoku.getPossibilities(x, arg));
-        })
+        let is_solvable = true;
 
-        //console.log(psbls[0]);
+        for (let i = 0; i < empty.length; i += 1) {
 
-        for (let i = 0; i < psbls.length; i += 1) {
-            if (psbls[i][2].length == 1) {
-                solved[empty[i]] = psbls[i][2][0]
-            }
         }
-
-
-        let solutions = [];
-
-        if (empty.length > 0){
-            
-
-            let psbl = Sudoku.getPossibilities(empty[0], arg)[2];
-            if (psbl.length > 1) {
-                //console.log('psbl', psbl)
-            }
-
-            for (let i = 0; i < psbl.length; i += 1) {
-                solved[empty[0]] = psbl[i];
-                let r = Sudoku.solve(solved);
-                //console.log(psbl, 'returned', Sudoku.solve(solved));
-                r.forEach((x) => {
-                    solutions.push(x);
-                })
-            }
-        }else{
-            solutions.push(arg);
-        }
-
-        
-        console.log('empty', empty.length, '\t', solutions.length)
-        
-
-        return solutions
     }
 
     pray() {
+        let a_v = 5;
         let used = [];
         
         this.holy = this.raw_puzzle.slice();
 
+        let attempts_remaining = a_v;
         let is_solvable = true;
-        while (is_solvable) {
+        while (is_solvable || attempts_remaining > 0) {
             let pos = Math.floor(Math.random() * 81);
 
             while (used.includes(pos)) {
@@ -257,13 +222,24 @@ class Sudoku {
                 }
             }
 
+            let tmp = this.holy[pos];
             this.holy[pos] = 0;
             used.push(pos);
 
-            is_solvable =  this.singleSolution();
+            if (this.singleSolution()) {
+                attempts_remaining = a_v;
+                is_solvable = true;
+
+                //used.push(pos);
+            } else {
+                this.holy[pos] = tmp;
+
+                attempts_remaining -= 1;
+                is_solvable = false;
+            }
         }
 
-        this.difficulty = 81 - used.length;
+        this.difficulty = used.length;
     }
 
     static print(puzzle) {
