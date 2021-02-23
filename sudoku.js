@@ -247,22 +247,26 @@ class Sudoku {
 
             let tmp = this.holy[pos];
             this.holy[pos] = 0;
-            used.push(pos);
 
-            if (this.singleSolution()) {
+            let ss = this.singleSolution();
+
+            if (ss) {
                 attempts_remaining = a_v;
                 is_solvable = true;
 
-                //used.push(pos);
+                used.push(pos);
             } else {
                 this.holy[pos] = tmp;
 
                 attempts_remaining -= 1;
                 is_solvable = false;
             }
+            if (used.length >= 81) {
+                attempts_remaining = 0;
+            }
         }
 
-        this.difficulty = used.length;
+        this.difficulty = used.length;        
     }
 
     static print(puzzle) {
