@@ -1,9 +1,12 @@
 import logo from './logo.svg';
 import './App.css';
 import React, {useState, useEffect} from 'react'
-import './components/footer'
+import Footer from './components/footer'
+import { ApiFilter } from './components/sudoku-api-filter';
+import { Board } from './components/sudoku-jsx';
+//import './components/sudoku-jsx'
 
-const sudoku = require('./sudoku-jsx')
+//const sudoku = require('./components/sudoku-jsx')
 
 function Tyler() {
   return <p>Thank you Tyler</p>
@@ -17,9 +20,10 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <p>Puzzle</p>
-        <sudoku.Board key={7}/>
-        <Tyler/>
+        <p>Welcome!</p>
+        <Board />
+        <ApiFilter />
+        <Footer />
       </header>
     </div>
   );

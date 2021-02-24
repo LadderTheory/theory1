@@ -1,5 +1,5 @@
-import e from 'express';
 import React from 'react'
+import Hotkeys from 'react-hot-keys'
 
 export class Square extends React.Component {
     constructor(props) {
@@ -83,11 +83,12 @@ export class Square extends React.Component {
     }
 }
 
+
 export class Board extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            empty: Array(81).fill(0),
+            puzzle: Array(81).fill(0),
             hovered: 81,
             focused: 81,
             api: {},
@@ -96,6 +97,38 @@ export class Board extends React.Component {
         this.handleClick = this.handleClick.bind(this);
         this.handleHover = this.handleHover.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
+    }
+
+    onKeyDown(keyName, e, handle) {
+        console.log(keyName);
+        console.log(e)
+        console.log(handle)
+        
+        switch(keyName) {
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                console.log('1-9');
+                if (this.state.focused < 81) {
+                    this.state.puzzle[this.state.focused] = keyName
+                }
+                break;
+            case 'escape':
+                this.setState({
+                    focused: 81
+                })
+                break;
+        }
+
+        this.setState({
+            reset: true,
+        })
     }
 
     getId(arg) {
@@ -125,6 +158,7 @@ export class Board extends React.Component {
             (result) => {
                 this.setState({
                 api: result,
+                puzzle: result.reduced,
                 });
                 console.log(result);
             },
@@ -142,11 +176,7 @@ export class Board extends React.Component {
     render() {
         //console.log('STATE', this.state)
 
-        let puzzle = this.state.empty.slice();
-
-        if (this.state.api.reduced) {
-            puzzle = this.state.api.reduced.slice();
-        }
+        let puzzle = this.state.puzzle.slice();
 
         let board = [];
 
@@ -155,8 +185,6 @@ export class Board extends React.Component {
             'background-color': 'black',
             'user-select': 'none',
         }
-
-
 
         for (let y = 0; y < 9; y += 1){
             for (let x = 0; x < 9; x += 1) {
@@ -198,87 +226,16 @@ export class Board extends React.Component {
         }
 
         return (
-            <div style={style} className="sudoku-board">
-                {board}
-                {difficulty}
-            </div>
-        )
-    }
-}
-
-export class ApiFilter extends React.Component {
-    constructor (props) {
-        super(props);
-        this.state = {
-            value : '',
-            checks: {},
-        }
-
-        this.handleCheck = this.handleCheck.bind(this);
-    }
-
-    handleCheck(e) {
-        let x = e.target.name
-        this.state.checks[x] = e.target.checked;
-        this.setState({
-            apple: true,
-        });
-    }
-
-    render() {
-
-        let filter_names = [
-            'steps',
-            'reduce',
-        ];
-
-        
-        let style = {
-            'background-color': '#181c24',
-            margin: '15px',
-        }
-
-        let filters = [];
-        let output_string = "http://somou.org/sudoku/api?"
-
-        filter_names.forEach((x) => {
-            if (typeof this.state.checks[x] == 'undefined') {
-                this.state.checks[x] = false;
-            }
-
-            filters.push(
-                <div>
-                    <label for={x}>{x}</label>
-                    <input type="checkbox" name={x} id={x} checked={this.state.checks[x]} onChange={this.handleCheck}/>
+            <Hotkeys
+                keyName="1,2,3,4,5,6,7,8,9,escape"
+                onKeyDown={this.onKeyDown}
+            >
+                <div style={style} className="sudoku-board" onKeyPress={this.onKeyDown} onKeyDown={this.onKeyDown}>
+                    {board}
+                    {difficulty}
                 </div>
-            )
-
-            if (this.state.checks[x]) {
-                if (output_string[output_string.length - 1] != '?') {
-                    output_string += '&';
-                }
-                output_string += x + "=t";
-            }
-        });
-
-        let output_style = {
-            backgroundColor: 'white',
-            color: 'black',
-            fontSize: '1em',
-            margin: '5px',
-        }
-
-        let output = (
-            <p style={output_style}>{output_string}</p>
-        )        
-
-        return (
-            <div style={style} className="sudoku-api-div">
-                <form>
-                    {filters}
-                    {output}
-                </form>
-            </div>
+            </Hotkeys>
+            
         )
     }
 }
