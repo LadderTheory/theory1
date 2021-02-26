@@ -1,88 +1,7 @@
 import React from 'react'
 import Hotkeys from 'react-hot-keys'
-
-export class Square extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            
-        }
-        
-    }
-
-    valueDisplay() {
-        let v = ' ';
-
-        if (this.props.value != '0') {
-            v = this.props.value;
-        }
-        
-        return v
-    }
-
-    render() {
-        //console.log(this.props);
-        let id = this.props.id;
-        let final_id = "sudoku-tile-" + id;
-
-        let cell_style = {
-            border: "black",
-            //'border-width': "1px",
-            //'border-style': 'solid',
-            margin: '1px',
-            width: '2em',
-            height: '2em',
-            display: 'flex',
-            float: 'left',
-            'background-color': this.props.color,
-            color: '#282c34',
-            'alignContent': 'center',
-            'justifyContent': 'center',
-            'flexDirection': 'column',
-            //'vertical-align': 'middle',
-            padding: '0px'
-        }
-        
-        let text_style = {
-            'vertical-align': 'middle',
-        }
-
-        if ((id+1) % 3 == 0) {
-            if ((id+1) % 9 != 0) {
-                //style['border-right-width'] = '3px';
-                cell_style['marginRight'] = '3px';
-            }
-        }
-    
-        if ((18 <= id && id <= 26) || (45 <= id && id <= 53)){
-            //style['border-bottom-width'] = '3px';
-            cell_style['marginBottom'] = '3px';
-        }
-           //  
-
-        let button = (
-            <div 
-            style={cell_style}
-            className='sudoku-tile' 
-            id={final_id}
-            onClick={(e) => {
-                this.props.click(e);
-            }}
-            onMouseEnter = {(e) => {
-                this.props.hover(e, true);
-            }}
-            onMouseLeave = {(e) => {
-                this.props.hover(e, false);
-            }}
-            >
-                {this.valueDisplay()}
-            </div>
-        )
-
-        return button;
-    }
-}
-
+import { Square } from './square'
+import { FilterBox } from './filterbox'
 
 export class Board extends React.Component {
     constructor(props) {
@@ -97,13 +16,16 @@ export class Board extends React.Component {
         this.handleClick = this.handleClick.bind(this);
         this.handleHover = this.handleHover.bind(this);
         this.onKeyDown = this.onKeyDown.bind(this);
+        this.focusedSet = this.focusedSet.bind(this);
     }
 
-    onKeyDown(keyName, e, handle) {
-        console.log(keyName);
-        console.log(e)
-        console.log(handle)
-        
+    focusedSet(arg) {
+        if (this.state.focused < 81) {
+            this.state.puzzle[this.state.focused] = arg
+        }
+    }
+
+    onKeyDown(keyName, e, handle) {        
         switch(keyName) {
             case '1':
             case '2':
@@ -114,15 +36,13 @@ export class Board extends React.Component {
             case '7':
             case '8':
             case '9':
-                console.log('1-9');
-                if (this.state.focused < 81) {
-                    this.state.puzzle[this.state.focused] = keyName
-                }
+                this.focusedSet(keyName);
                 break;
             case 'escape':
-                this.setState({
-                    focused: 81
-                })
+                this.state.focused = 81;
+                break;
+            case 'backspace':
+                this.focusedSet(0)
                 break;
         }
 
@@ -226,16 +146,17 @@ export class Board extends React.Component {
         }
 
         return (
-            <Hotkeys
-                keyName="1,2,3,4,5,6,7,8,9,escape"
-                onKeyDown={this.onKeyDown}
-            >
-                <div style={style} className="sudoku-board" onKeyPress={this.onKeyDown} onKeyDown={this.onKeyDown}>
-                    {board}
-                    {difficulty}
-                </div>
-            </Hotkeys>
-            
+            <div>
+                <Hotkeys
+                    keyName="1,2,3,4,5,6,7,8,9,escape,backspace"
+                    onKeyDown={this.onKeyDown}
+                >
+                    <div style={style} className="sudoku-board" onKeyPress={this.onKeyDown} onKeyDown={this.onKeyDown}>
+                        {board}
+                        {difficulty}
+                    </div>
+                </Hotkeys>
+            </div>
         )
     }
 }
